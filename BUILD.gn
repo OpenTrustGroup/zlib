@@ -38,7 +38,8 @@ config("zlib_warnings") {
   ]
 }
 
-static_library("zlib") {
+shared_library("zlib") {
+  output_name = "libz"
   sources = [
     "adler32.c",
     "compress.c",
@@ -69,6 +70,7 @@ static_library("zlib") {
   ]
 
   configs += [ ":zlib_warnings" ]
+  configs -= [ "//build/config:symbol_visibility_hidden" ]
   public_configs = [ ":zlib_config" ]
 }
 
@@ -85,7 +87,7 @@ config("minizip_warnings") {
   }
 }
 
-static_library("minizip") {
+shared_library("minizip") {
   sources = [
     "contrib/minizip/crypt.h",
     "contrib/minizip/ioapi.c",
@@ -98,5 +100,6 @@ static_library("minizip") {
 
   deps = [ ":zlib" ]
   configs += [ ":minizip_warnings" ]
+  configs -= [ "//build/config:symbol_visibility_hidden" ]
   public_configs = [ ":zlib_config" ]
 }
