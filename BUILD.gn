@@ -26,7 +26,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//build/toolchain/shared.gni")
 import("//packages/package.gni")
 
 config("zlib_config") {
@@ -39,17 +38,7 @@ config("zlib_warnings") {
   cflags = [ "-Wno-implicit-function-declaration" ]
 }
 
-group("zlib") {
-  public_configs = [ ":zlib_config" ]
-
-  public_deps = [
-    ":z_lib($shared_toolchain)",
-  ]
-}
-
-shared_library("z_lib") {
-  visibility = [ ":*" ]
-
+shared_library("zlib") {
   output_name = "z"
 
   sources = [
@@ -97,19 +86,7 @@ config("minizip_warnings") {
   }
 }
 
-group("minizip") {
-  public_configs = [ ":zlib_config" ]
-
-  public_deps = [
-    ":minizip_lib($shared_toolchain)",
-  ]
-}
-
-shared_library("minizip_lib") {
-  visibility = [ ":*" ]
-
-  output_name = "minizip"
-
+shared_library("minizip") {
   sources = [
     "contrib/minizip/crypt.h",
     "contrib/minizip/ioapi.c",
