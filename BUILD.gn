@@ -106,7 +106,10 @@ shared_library("minizip") {
 }
 
 package("package") {
+  system_image = true
+
   package_name = "zlib"
+
   deps = [
     ":minizip",
     ":zlib",
