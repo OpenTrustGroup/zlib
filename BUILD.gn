@@ -36,16 +36,9 @@ config("zlib_warnings") {
   cflags = [ "-Wno-implicit-function-declaration" ]
 }
 
-target(default_library_type, "zlib") {
+shared_library("zlib") {
   output_name = "z"
-  deps = [
-    ":zlib_static",
-  ]
 
-  public_configs = [ ":zlib_config" ]
-}
-
-source_set("zlib_static") {
   sources = [
     "adler32.c",
     "compress.c",
@@ -91,7 +84,7 @@ config("minizip_warnings") {
   }
 }
 
-target(default_library_type, "minizip") {
+shared_library("minizip") {
   sources = [
     "contrib/minizip/crypt.h",
     "contrib/minizip/ioapi.c",
