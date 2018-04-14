@@ -1,0 +1,5 @@
+Name: zlib
+Upstream git: https://github.com/madler/zlib
+Description:
+
+zlib compression and decompression library.
