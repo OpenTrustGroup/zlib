@@ -1,5 +1,7 @@
 Name: zlib
-Upstream git: https://github.com/madler/zlib
+License: zlib
+License File: README
+Upstream Git: https://github.com/madler/zlib
 Description:
 
 zlib compression and decompression library.
