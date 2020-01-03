@@ -26,6 +26,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import("//build/package.gni")
+
 config("zlib_config") {
   include_dirs = [ "." ]
 }
@@ -119,3 +121,68 @@ target(default_library_type, "minizip") {
   configs -= [ "//build/config:symbol_visibility_hidden" ]
   public_configs = [ ":zlib_config" ]
 }
+
+package("package") {
+  package_name = "zlib"
+  system_image = true
+
+  deps = [
+    ":zlib",
+  ]
+
+  libraries = [ {
+        name = "libz.so"
+      } ]
+}
+
+#################################################
+## SDK
+#################################################
+
+import("//build/sdk/sdk_atom.gni")
+
+sdk_atom("zlib_sdk") {
+  domain = "cpp"
+  name = "zlib_sdk"
+
+  tags = [
+    "type:compiled_shared",
+    "arch:target",
+  ]
+
+  output_category = "hee/zlib"
+
+  files = []
+
+  # copy all head files into sdk.
+  all_files = exec_script("//build/sdk/list_files.sh",
+                          [ rebase_path(".", root_build_dir) ],
+                          "list lines")
+  foreach(f, all_files) {
+    extension = get_path_info(f, "extension")
+    if (extension == "h") {
+      files += [
+        {
+          source = "$f"
+          dest = "include/$f"
+        },
+      ]
+    }
+  }
+
+  # copy library
+  if (shlib_toolchain != "//build/toolchain:host_x64-shared") {
+    # TODO: If BUILD.gn supports to create the ABI so, then use real file.
+    print("WARN: use the stripped libz.so to take place of so.abi")
+    shared_out_dir = get_label_info(":bogus($shlib_toolchain)", "root_out_dir")
+    files += [
+      {
+        source = "$shared_out_dir/libz.so"
+        dest = "lib/libz.so"
+      }
+    ]
+  }
+
+  non_sdk_deps = [ ":zlib" ]
+}
+
