@@ -139,50 +139,16 @@ package("package") {
 ## SDK
 #################################################
 
-import("//build/sdk/sdk_atom.gni")
+import("//build/nebula/nbl_sdk_library.gni")
 
-sdk_atom("zlib_sdk") {
-  domain = "cpp"
-  name = "zlib_sdk"
-
-  tags = [
-    "type:compiled_shared",
-    "arch:target",
+nbl_sdk_library("zlib_sdk") {
+  name = "zlib"
+  category = "hee"
+  hdr_dir = "."
+  libs = [
+    "libz.so",
   ]
-
-  output_category = "hee/zlib"
-
-  files = []
-
-  # copy all head files into sdk.
-  all_files = exec_script("//build/sdk/list_files.sh",
-                          [ rebase_path(".", root_build_dir) ],
-                          "list lines")
-  foreach(f, all_files) {
-    extension = get_path_info(f, "extension")
-    if (extension == "h") {
-      files += [
-        {
-          source = "$f"
-          dest = "include/$f"
-        },
-      ]
-    }
-  }
-
-  # copy library
-  if (shlib_toolchain != "//build/toolchain:host_x64-shared") {
-    # TODO: If BUILD.gn supports to create the ABI so, then use real file.
-    print("WARN: use the stripped libz.so to take place of so.abi")
-    shared_out_dir = get_label_info(":bogus($shlib_toolchain)", "root_out_dir")
-    files += [
-      {
-        source = "$shared_out_dir/libz.so"
-        dest = "lib/libz.so"
-      }
-    ]
-  }
-
-  non_sdk_deps = [ ":zlib" ]
+  deps = [
+    ":zlib",
+  ]
 }
-
